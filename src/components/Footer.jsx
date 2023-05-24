@@ -22,6 +22,7 @@ const Footer = () => {
                     </div>
                 </div>
             </div>
+            <h3 className='bg-black py-2 text-white text-center'>Copyright © CulinaryCloud. All rights reserved.</h3>
         </div>
     );
 };
