@@ -1,25 +1,80 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { CiLogin } from 'react-icons/ci';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 import loginImg from '../assets/others/authentication1.png'
 import fbImg from '../assets/login/Group 162fb.png'
 import googleImg from '../assets/login/Group 156google.png'
 import githubImg from '../assets/login/Group 158github.png'
-import { loadCaptchaEnginge, LoadCanvasTemplate, LoadCanvasTemplateNoReload, validateCaptcha } from 'react-simple-captcha';
+import { loadCaptchaEnginge, LoadCanvasTemplate,  validateCaptcha } from 'react-simple-captcha';
+import { useAuthGolobally } from '../context/AuthProvider';
 
 
 const Login = () => {
+    const CaptchaInput = useRef(null);
+    const { signIn, googleUser, signInWithGithub } = useAuthGolobally();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from?.pathname || '/'
+
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
 
+    useEffect(() => {
+        loadCaptchaEnginge(6);
+    }, [])
 
     const handleLogin = (e) => {
         e.preventDefault();
+
+        if (!validateCaptcha(CaptchaInput.current.value)) {
+            setError("Captcha is not valid")
+            return
+        }
+
         const email = e.target.email.value;
         const password = e.target.password.value;
         console.log(email, password);
+
+        if (!email || !password) {
+            setError("Cannot leave any field empty")
+            return
+        }
+
+        signIn(email, password)
+            .then(() => {
+                navigate(from, { replace: true })
+                form.reset()
+            })
+            .catch(error => {
+                setError(error.message)
+            })
     }
+
+    const handelGoogle = () => {
+        googleUser()
+            .then((result) => {
+
+                navigate(from)
+            })
+            .catch((error) => {
+                console.log(error.message)
+            })
+    }
+
+    const handelGitHub = () => {
+        signInWithGithub()
+            .then((result) => {
+                const gitHub = result.user;
+                console.log(gitHub);
+                navigate(from)
+            })
+            .catch((error) => {
+                console.log(error.message)
+                setError(error.message)
+            })
+    }
+
     return (
         <main className='container grid md:grid-cols-2 px-3 mt-10 shadow-[0px 5px 10px 0px]'>
             <img className=' ' src={loginImg} alt="" />
@@ -37,8 +92,12 @@ const Login = () => {
                                 }
                             </span>
                         </div>
-                        
-                    
+                        <div className='relative bg-white w-[80%] py-5 my-5 rounded mx-auto px-4'>
+                            <div className='absolute top-2 left-2'>
+                                <LoadCanvasTemplate />
+                            </div>
+                        </div>
+                        <input ref={CaptchaInput} className='w-[80%] py-2 my-5 rounded outline-none px-4 ' type="text" placeholder='    Type here' required />
 
                         <button className='w-[80%]  bg-[#e4b165d4]  mx-auto rounded py-2 my-5 text-white font-semibold flex items-center justify-center'>Login <span><CiLogin className='w-8 h-8 ' /></span> </button>
 
@@ -54,12 +113,12 @@ const Login = () => {
                             <img src={fbImg} alt="" />
                         </span>
                     </button>
-                    <button>
+                    <button onClick={handelGoogle}>
                         <span>
                             <img src={googleImg} alt="" />
                         </span>
                     </button>
-                    <button>
+                    <button onClick={handelGitHub}>
                         <span>
                             <img src={githubImg} alt="" />
                         </span>

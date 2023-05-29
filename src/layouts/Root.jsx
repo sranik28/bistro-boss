@@ -1,17 +1,19 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import NavBar from '../pages/header/NavBar';
 import Footer from '../components/Footer';
 
 const Root = () => {
-    const noHeaderFooter = location.pathname.includes('login')
+    const location = useLocation();
+    const noHeaderFooter = location.pathname.includes('/login');
+    const noHeaderFooterSinUp = location.pathname.includes('/register');
     return (
         <div>
-            {noHeaderFooter || <NavBar />}
+            {noHeaderFooter || noHeaderFooterSinUp || <NavBar />}
             <div className='md:min-h-[calc(100vh-100px)] '>
                 <Outlet />
             </div>
-            {noHeaderFooter || <Footer />}
+            {noHeaderFooter || noHeaderFooterSinUp || <Footer />}
         </div>
     );
 };

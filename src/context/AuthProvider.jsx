@@ -1,11 +1,12 @@
-import { GoogleAuthProvider, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
-import { createContext, useEffect, useState } from "react";
+import { GithubAuthProvider, GoogleAuthProvider, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { createContext, useContext, useEffect, useState } from "react";
 import app from "../firebase/firebase.config";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
 const CreateAuth = createContext();
 const auth = getAuth(app);
 const AuthProvider = ({ children }) => {
+
     const [user, setUser] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -23,10 +24,16 @@ const AuthProvider = ({ children }) => {
         return auth.signOut();
     }
 
-    const provider = GoogleAuthProvider()
+    const provider = new GoogleAuthProvider()
     const googleUser = () => {
         return signInWithPopup(auth, provider)
 
+    }
+
+    const githubProvider = new GithubAuthProvider()
+    const signInWithGithub = () => {
+      return  signInWithPopup(auth, githubProvider)
+       
     }
 
     useEffect(() => {
@@ -45,11 +52,16 @@ const AuthProvider = ({ children }) => {
         createUser,
         signIn,
         logOut,
-        googleUser
+        googleUser,
+        signInWithGithub
     }
     return <CreateAuth.Provider value={authData}>
         {children}
     </CreateAuth.Provider>
 }
 
-export { AuthProvider }
+const useAuthGolobally = () => {
+    return useContext(CreateAuth)
+}
+
+export { AuthProvider, useAuthGolobally }
