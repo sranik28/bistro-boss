@@ -4,13 +4,14 @@ import NavBar from '../pages/header/NavBar';
 import Footer from '../components/Footer';
 
 const Root = () => {
+    const noHeaderFooter = location.pathname.includes('login')
     return (
         <div>
-            <NavBar />
+            {noHeaderFooter || <NavBar />}
             <div className='md:min-h-[calc(100vh-100px)] '>
                 <Outlet />
             </div>
-            <Footer />
+            {noHeaderFooter || <Footer />}
         </div>
     );
 };

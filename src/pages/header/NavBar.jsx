@@ -30,7 +30,10 @@ const NavBar = () => {
                     <NavLink onClick={() => setToggle(false)} to="/our-menu" className={({ isActive }) => isActive ? "active" : "font-bold uppercase"}>Our Menu</NavLink>
                 </li>
                 <li>
-                    <NavLink onClick={() => setToggle(false)} to="/our-shop" className={({ isActive }) => isActive ? "active" : "font-bold uppercase"}>Our Shop </NavLink>
+                    <NavLink onClick={() => setToggle(false)} to="/our-shop/salad" className={({ isActive }) => isActive ? "active" : "font-bold uppercase"}>Our Shop </NavLink>
+                </li>
+                <li>
+                    <NavLink onClick={() => setToggle(false)} to="/login" className={({ isActive }) => isActive ? "active" : "font-bold uppercase"}>Login </NavLink>
                 </li>
             </ul>
         </nav>

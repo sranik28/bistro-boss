@@ -9,6 +9,7 @@ import Testimonial from '../components/Testimonial';
 import CallUs from '../components/CallUs';
 import { Helmet } from 'react-helmet-async';
 
+
 const Home = () => {
     return (
         <div>
@@ -23,6 +24,7 @@ const Home = () => {
             <ChefRecommends />
             <Featured />
             <Testimonial />
+
         </div>
     );
 };
